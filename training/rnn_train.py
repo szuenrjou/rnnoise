@@ -21,11 +21,11 @@ from keras.constraints import Constraint
 from keras import backend as K
 import numpy as np
 
-#import tensorflow as tf
-#from keras.backend.tensorflow_backend import set_session
-#config = tf.ConfigProto()
-#config.gpu_options.per_process_gpu_memory_fraction = 0.42
-#set_session(tf.Session(config=config))
+import tensorflow as tf
+from keras.backend import set_session
+config = tf.compat.v1.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.42
+set_session(tf.compat.v1.Session(config=config))
 
 
 def my_crossentropy(y_true, y_pred):
@@ -72,7 +72,7 @@ denoise_gru = GRU(96, activation='tanh', recurrent_activation='sigmoid', return_
 
 denoise_output = Dense(22, activation='sigmoid', name='denoise_output', kernel_constraint=constraint, bias_constraint=constraint)(denoise_gru)
 
-model = Model(inputs=main_input, outputs=[denoise_output, vad_output])
+model = Model(inputs=main_input, outputs= denoise_output)
 
 model.compile(loss=[mycost, my_crossentropy],
               metrics=[msse],
